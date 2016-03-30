@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/lord/img/master/logo-slate.png" alt="Slate: API Documentation Generator" width="226">
-  <br>
-  <a href="https://travis-ci.org/tripit/slate"><img src="https://travis-ci.org/tripit/slate.svg?branch=master" alt="Build Status"></a>
 </p>
+
+<p align="center"><i>A Node.js port of <a href="https://github.com/tripit/slate">tripit/slate</a></i></p>
 
 <p align="center">Slate helps you create beautiful, intelligent, responsive API documentation.</p>
 
@@ -21,7 +21,7 @@ Features
 
 * **Write code samples in multiple languages** — If your API has bindings in multiple programming languages, you can easily put in tabs to switch between them. In your document, you'll distinguish different languages by specifying the language name at the top of each code block, just like with Github Flavored Markdown.
 
-* **Out-of-the-box syntax highlighting** for [almost 60 languages](http://rouge.jayferd.us/demo), no configuration required.
+* **Out-of-the-box syntax highlighting** for [150 languages](https://highlightjs.org/), no configuration required.
 
 * **Automatic, smoothly scrolling table of contents** on the far left of the page. As you scroll, it displays your current position in the document. It's fast, too. We're using Slate at TripIt to build documentation for our new API, where our table of contents has over 180 entries. We've made sure that the performance remains excellent, even for larger documents.
 
@@ -38,70 +38,39 @@ Getting Started with Slate
 
 You're going to need:
 
- - **Linux or OS X** — Windows may work, but is unsupported.
- - **Ruby, version 1.9.3 or newer**
- - **Bundler** — If Ruby is already installed, but the `bundle` command doesn't work, just run `gem install bundler` in a terminal.
+ - **Node.js**
 
 ### Getting Set Up
 
 1. Fork this repository on Github.
-2. Clone *your forked repository* (not our original one) to your hard drive with `git clone https://github.com/YOURUSERNAME/slate.git`
-3. `cd slate`
-4. Initialize and start Slate. You can either do this locally, or with Vagrant:
+2. Clone *your forked repository* (not our original one) to your hard drive with `git clone https://github.com/YOURUSERNAME/node-slate.git`
+3. `cd node-slate`
+4. Initialize and start Slate:
 
 ```shell
-# either run this to run locally
-bundle install
-bundle exec middleman server
-
-# OR run this to run with vagrant
-vagrant up
+npm install
+npm run build
+npm start
 ```
 
 You can now see the docs at http://localhost:4567. Whoa! That was fast!
 
-Now that Slate is all set up your machine, you'll probably want to learn more about [editing Slate markdown](https://github.com/tripit/slate/wiki/Markdown-Syntax), or [how to publish your docs](https://github.com/tripit/slate/wiki/Deploying-Slate).
+### Commands
 
-If you'd prefer to use Docker, instructions are available [in the wiki](https://github.com/tripit/slate/wiki/Docker).
+Compile documentation to static site in `./build`:
 
-Companies Using Slate
----------------------------------
+```shell
+npm run build
+```
 
-* [NASA](https://api.nasa.gov)
-* [IBM Cloudant](https://docs.cloudant.com/api.html)
-* [Travis-CI](https://docs.travis-ci.com/api/)
-* [Mozilla](http://mozilla.github.io/localForage/)
-* [Appium](http://appium.io/slate/en/master)
-* [Dwolla](https://docs.dwolla.com/)
-* [Clearbit](https://clearbit.com/docs)
-* [Coinbase](https://developers.coinbase.com/api)
-* [Parrot Drones](http://developer.parrot.com/docs/bebop/)
-* [Fidor Bank](http://docs.fidor.de/)
+Run a dev server that live-reloads at http://localhost:4567:
 
-You can view more in [the list on the wiki](https://github.com/tripit/slate/wiki/Slate-in-the-Wild).
+```shell
+npm start
+```
 
-Need Help? Found a bug?
---------------------
+Publish your docs to `origin/gh-pages` branch:
 
-Read our [contribution guidelines](https://github.com/tripit/slate/blob/master/CONTRIBUTING.md), and then [submit an issue](https://github.com/tripit/slate/issues) to the Slate Github if you need any help. And, of course, feel free to submit pull requests with bug fixes or changes.
-
-Contributors
---------------------
-
-Slate was built by [Robert Lord](https://lord.io) while at [TripIt](https://www.tripit.com/).
-
-Thanks to the following people who have submitted major pull requests:
-
-- [@chrissrogers](https://github.com/chrissrogers)
-- [@bootstraponline](https://github.com/bootstraponline)
-- [@realityking](https://github.com/realityking)
-
-Also, thanks to [Sauce Labs](http://saucelabs.com) for helping sponsor the project.
-
-Special Thanks
---------------------
-- [Middleman](https://github.com/middleman/middleman)
-- [jquery.tocify.js](https://github.com/gfranko/jquery.tocify.js)
-- [middleman-syntax](https://github.com/middleman/middleman-syntax)
-- [middleman-gh-pages](https://github.com/edgecase/middleman-gh-pages)
-- [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
+```shell
+npm run deploy
+```

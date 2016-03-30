@@ -1,21 +1,3 @@
----
-title: API Reference
-
-language_tabs:
-  - shell
-  - ruby
-  - python
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
-
-search: true
----
-
 # Introduction
 
 Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
@@ -40,7 +22,7 @@ import kittn
 api = kittn.authorize('meowmeowmeow')
 ```
 
-```shell
+```bash
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
   -H "Authorization: meowmeowmeow"
@@ -76,7 +58,7 @@ api = kittn.authorize('meowmeowmeow')
 api.kittens.get()
 ```
 
-```shell
+```bash
 curl "http://example.com/api/kittens"
   -H "Authorization: meowmeowmeow"
 ```
@@ -135,7 +117,7 @@ api = kittn.authorize('meowmeowmeow')
 api.kittens.get(2)
 ```
 
-```shell
+```bash
 curl "http://example.com/api/kittens/2"
   -H "Authorization: meowmeowmeow"
 ```
@@ -165,4 +147,3 @@ This endpoint retrieves a specific kitten.
 Parameter | Description
 --------- | -----------
 ID | The ID of the kitten to retrieve
-

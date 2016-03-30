@@ -30,7 +30,7 @@ overridden by environment variables. Any environment variables are overridden
 by values set in a '.env' file (if it exists), and in turn by those set in a
 file specified by the '--config-file' option."
 
-bundle exec middleman build --clean
+npm run build
 
 parse_args() {
   # Set args from a local environment file.
