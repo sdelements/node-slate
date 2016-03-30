@@ -5,6 +5,7 @@ var cleanCSS = require('gulp-clean-css');
 var concat = require('gulp-concat');
 var ejs = require('gulp-ejs');
 var gls = require('gulp-live-server');
+var gulpif = require('gulp-if');
 var prettify = require('gulp-prettify');
 var rename = require("gulp-rename");
 var sass = require('gulp-sass');
@@ -18,6 +19,7 @@ var yaml = require('js-yaml');
 
 
 var renderer = new marked.Renderer();
+var COMPRESS = true;
 
 renderer.code = function (code, language) {
   var highlighted = language ? highlight.highlight(language, code).value
@@ -30,8 +32,8 @@ var readIndexYml = function() {
   return yaml.safeLoad(fs.readFileSync('./source/index.yml', 'utf8'));
 };
 
-gulp.task('clean', function(cb) {
-  del(['build'], cb);
+gulp.task('clean', function () {
+  return del(['build/*']);
 });
 
 gulp.task('fonts', function() {
@@ -42,36 +44,29 @@ gulp.task('images', function() {
   return gulp.src('./source/images/**/*').pipe(gulp.dest('build/images'));
 });
 
-gulp.task('js-no-search', function() {
-  return gulp.src([
-      './source/javascripts/lib/_energize.js',
-      './source/javascripts/lib/_jquery.js',
-      './source/javascripts/lib/_jquery_ui.js',
-      './source/javascripts/lib/_jquery.tocify.js',
-      './source/javascripts/lib/_imagesloaded.min.js',
-      './source/javascripts/app/_lang.js',
-      './source/javascripts/app/_toc.js',
-    ])
-    .pipe(concat('all_nosearch.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('./build/javascripts'));
-});
-
 gulp.task('js', function() {
-  return gulp.src([
-      './source/javascripts/lib/_energize.js',
-      './source/javascripts/lib/_jquery.js',
-      './source/javascripts/lib/_jquery_ui.js',
-      './source/javascripts/lib/_jquery.tocify.js',
-      './source/javascripts/lib/_imagesloaded.min.js',
-      './source/javascripts/lib/_lunr.js',
-      './source/javascripts/lib/_jquery.highlight.js',
-      './source/javascripts/app/_lang.js',
-      './source/javascripts/app/_search.js',
-      './source/javascripts/app/_toc.js',
-    ])
+  var config = readIndexYml();
+  var libs = [
+    './source/javascripts/lib/_energize.js',
+    './source/javascripts/lib/_jquery.js',
+    './source/javascripts/lib/_jquery_ui.js',
+    './source/javascripts/lib/_jquery.tocify.js',
+    './source/javascripts/lib/_imagesloaded.min.js',
+  ];
+  var scripts = [
+    './source/javascripts/app/_lang.js',
+    './source/javascripts/app/_toc.js',
+  ];
+
+  if (config.search) {
+    libs.push('./source/javascripts/lib/_lunr.js');
+    libs.push('./source/javascripts/lib/_jquery.highlight.js');
+    libs.push('./source/javascripts/app/_search.js');
+  }
+
+  return gulp.src(libs.concat(scripts))
     .pipe(concat('all.js'))
-    .pipe(uglify())
+    .pipe(gulpif(COMPRESS, uglify()))
     .pipe(gulp.dest('./build/javascripts'));
 });
 
@@ -79,7 +74,7 @@ gulp.task('sass', function () {
   return gulp.src('./source/stylesheets/*.css.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(rename({ extname: ''}))
-    .pipe(cleanCSS())
+    .pipe(gulpif(COMPRESS, cleanCSS()))
     .pipe(gulp.dest('./build/stylesheets'));
 });
 
@@ -88,7 +83,7 @@ gulp.task('highlightjs', function () {
   var path = './node_modules/highlight.js/styles/' + config.highlight_theme + '.css';
   return gulp.src(path)
     .pipe(rename({ prefix: 'highlight-'}))
-    .pipe(cleanCSS())
+    .pipe(gulpif(COMPRESS, cleanCSS()))
     .pipe(gulp.dest('./build/stylesheets'));
 });
 
@@ -121,17 +116,22 @@ gulp.task('html', function () {
 
   return gulp.src('./source/*.html')
   	.pipe(ejs(data).on('error', gutil.log))
-    .pipe(prettify({indent_size: 2}))
+    .pipe(gulpif(COMPRESS, prettify({indent_size: 2})))
   	.pipe(gulp.dest('./build'));
 });
 
-gulp.task('default', ['clean', 'fonts', 'images', 'highlightjs', 'js', 'js-no-search', 'sass', 'html']);
+gulp.task('NO_COMPRESS', function() {
+  COMPRESS = false;
+});
 
-gulp.task('serve', function() {
+gulp.task('default', ['clean', 'fonts', 'images', 'highlightjs', 'js', 'sass', 'html']);
+
+gulp.task('serve', ['NO_COMPRESS', 'default'], function() {
+
   gulp.watch(['./source/*.html', './source/includes/**/*'], ['html']);
   gulp.watch('./source/javascripts/**/*', ['js']);
   gulp.watch('./source/stylesheets/**/*', ['sass']);
-  gulp.watch('./source/index.yml', ['highlightjs', 'html']);
+  gulp.watch('./source/index.yml', ['highlightjs', 'js', 'html']);
 
   var server = gls.static('build', 4567);
   server.start();

@@ -24,11 +24,7 @@ under the License.
     <%- stylesheet_link_tag('screen', 'screen') %>
     <%- stylesheet_link_tag('print', 'print') %>
     <%- stylesheet_link_tag('highlight-' + current_page.data.highlight_theme, 'screen, print') %>
-    <% if (current_page.data.search) { %>
-      <%- javascript_include_tag('all') %>
-    <% } else { %>
-      <%- javascript_include_tag('all_nosearch') %>
-    <% } %>
+    <%- javascript_include_tag('all') %>
   </head>
 
   <body class="<%= page_classes %>" data-languages="<%= JSON.stringify(langs) %>">
