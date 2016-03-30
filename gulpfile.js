@@ -6,6 +6,7 @@ var concat = require('gulp-concat');
 var ejs = require('gulp-ejs');
 var gls = require('gulp-live-server');
 var gulpif = require('gulp-if');
+var open = require('gulp-open');
 var prettify = require('gulp-prettify');
 var rename = require("gulp-rename");
 var sass = require('gulp-sass');
@@ -139,4 +140,6 @@ gulp.task('serve', ['NO_COMPRESS', 'default'], function() {
   gulp.watch(['build/**/*'], function (file) {
     server.notify.apply(server, [file]);
   });
+
+  gulp.src(__filename).pipe(open({uri: 'http://localhost:4567'}));
 });
