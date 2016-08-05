@@ -33,6 +33,35 @@ var readIndexYml = function() {
   return yaml.safeLoad(fs.readFileSync('./source/index.yml', 'utf8'));
 };
 
+var getPageData = function() {
+  var config = readIndexYml();
+
+  var includes = config.includes
+        .map(function(include) { return './source/includes/' + include + '.md'; })
+        .map(function(include) { return fs.readFileSync(include, 'utf8'); })
+        .map(function(include) { return marked(include, { renderer: renderer }); });
+
+  return {
+    current_page: {
+      data: config
+    },
+    page_classes: '',
+    includes: includes,
+    image_tag: function(filename, alt, className) {
+      return '<img alt="' + alt + '" class="' + className + '" src="images/' + filename + '">';
+    },
+    javascript_include_tag: function(name) {
+      return '<script src="javascripts/' + name + '.js" type="text/javascript"></script>';
+    },
+    stylesheet_link_tag: function(name, media) {
+      return '<link href="stylesheets/' + name + '.css" rel="stylesheet" type="text/css" media="' + media + '" />';
+    },
+    langs: (config.language_tabs || []).map(function(lang) {
+      return typeof lang == 'string' ? lang : lang.keys.first;
+    })
+  };
+};
+
 gulp.task('clean', function () {
   return del(['build/*']);
 });
@@ -89,32 +118,7 @@ gulp.task('highlightjs', function () {
 });
 
 gulp.task('html', function () {
-  var config = readIndexYml();
-  var includes = config.includes
-        .map(function(include) { return './source/includes/' + include + '.md'; })
-        .map(function(include) { return fs.readFileSync(include, 'utf8'); })
-        .map(function(include) { return marked(include, { renderer: renderer }); });
-
-  var data = {
-    current_page: {
-      data: config
-    },
-    page_classes: '',
-    includes: includes,
-    image_tag: function(filename) {
-      return '<img src="images/' + filename + '">';
-    },
-    javascript_include_tag: function(name) {
-      return '<script src="javascripts/' + name + '.js" type="text/javascript"></script>';
-    },
-    stylesheet_link_tag: function(name, media) {
-      return '<link href="stylesheets/' + name + '.css" rel="stylesheet" type="text/css" media="' + media + '" />';
-    },
-    langs: (config.language_tabs || []).map(function(lang) {
-      return typeof lang == 'string' ? lang : lang.keys.first;
-    })
-  };
-
+  var data = getPageData();
   return gulp.src('./source/*.html')
   	.pipe(ejs(data).on('error', gutil.log))
     .pipe(gulpif(COMPRESS, prettify({indent_size: 2})))
